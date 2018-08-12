@@ -60,10 +60,31 @@ module Paperclip
       !@convert_options.nil? && !@convert_options.empty?
     end
 
+    def max_dimensions
+      Paperclip.options[:max_image_dimensions]
+    end
+
+    def check_dimensions!(src)
+      begin
+        dimensions = Paperclip.fetch_dimensions(File.expand_path(src.path))
+
+        raise Paperclip::Error, "Can't read dimensions for #{@basename}" unless dimensions && dimensions.count == 2
+
+        return unless dimensions.first > max_dimensions.first || dimensions.second > max_dimensions.second
+
+        raise Paperclip::Errors::ImageTooBigError, "Dimensions #{dimensions.join('x')} exceed the max dimensions #{max_dimensions.join('x')}"
+      rescue StandardError => e
+        raise e if e.is_a? Paperclip::Error
+        raise Paperclip::Error, "Can't read dimensions for #{@basename}"
+      end
+    end
+
     # Performs the conversion of the +file+ into a thumbnail. Returns the Tempfile
     # that contains the new image.
     def make
       src = @file
+      check_dimensions!(src)
+
       dst = Tempfile.new([@basename, @format ? ".#{@format}" : ''])
       dst.binmode
 

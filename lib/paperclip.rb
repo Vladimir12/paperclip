@@ -87,7 +87,8 @@ module Paperclip
       :log_command => true,
       :swallow_stderr => true,
       :content_type_mappings => {},
-      :use_exif_orientation => true
+      :use_exif_orientation => true,
+      :max_image_dimensions => [8000, 8000]
     }
   end
 

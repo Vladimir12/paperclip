@@ -28,5 +28,9 @@ module Paperclip
     # should be throwing this error upon the infinite loop as well.
     class InfiniteInterpolationError < Paperclip::Error
     end
+
+    # Will be thrown if image exceeds maximum dimensions
+    class ImageTooBigError < Paperclip::Error
+    end
   end
 end

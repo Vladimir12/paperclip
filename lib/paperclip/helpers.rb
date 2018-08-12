@@ -8,6 +8,10 @@ module Paperclip
       Paperclip::Interpolations[key] = block
     end
 
+    def fetch_dimensions(file_path)
+      Cocaine::CommandLine.new('identify', "-format \"%w %h\" \"#{file_path}\"").run.split(' ').map(&:to_i)
+    end
+
     # The run method takes the name of a binary to run, the arguments to that binary
     # and some options:
     #
